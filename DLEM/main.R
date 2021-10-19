@@ -42,9 +42,9 @@ dataPath <- fromJSON(file = "config.json")[[1]]
 #    model_specifiC_helpers which means that you have to provide
 #    your version of this fuction which will most likely return different
 #    variables 
-# get data for a selected site: data path, longitude, latitude
-lon=-61.8125#33.3
-lat=-17.5#50.0
+# get data for a selected site: data path, longitude, latitude,PFT=9, tropical Brodleaf Forest
+lon=100.20#33.3
+lat=17.85#50.0
 
 # read data from NetCDF if using the script for he 1st time
 #dat<-get_example_site_vars(dataPath, lon, lat)
