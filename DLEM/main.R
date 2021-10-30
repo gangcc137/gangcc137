@@ -312,46 +312,6 @@ epa_final<-as.list(epa_final)
 optimized = param2res(epa_final) # run the model with optimized parameters
 summary(as.data.frame(optimized))
 
-#annual vegetation pool
-optimized$veg_yr=optimized$C_leaf+optimized$C_sp+optimized$C_froot+optimized$C_croot
-
-cveg_op=NULL
-for (i in 0:319) {
-  num=sum(optimized$veg_yr[(12*i+1):(12*i+12)])
-  cveg_op=c(cveg_op,num)
-}
-#annual litter pool
-optimized$litter=optimized$C_AOM1+optimized$C_AOM2
-
-clitter_op=NULL
-for (i in 0:319) {
-  num=sum(optimized$litter[(12*i+1):(12*i+12)])
-  clitter_op=c(clitter_op,num)
-}
-#annual soil pool
-optimized$soil=optimized$C_SMB1+optimized$C_SR+optimized$C_SMB2+
-  optimized$C_NOM+optimized$C_DOM+optimized$C_PSOM
-
-csoil_op=NULL
-for (i in 0:319) {
-  num=sum(optimized$soil[(12*i+1):(12*i+12)])
-  csoil_op=c(csoil_op,num)
-}
-
-#annual rh
-rh_annual_op=NULL
-for (i in 0:319) {
-  num=sum(optimized$rh[(12*i+1):(12*i+12)])
-  rh_annual_op=c(rh_annual_op,num)
-}
-
-optimized_new=list(
-  C_veg_op=cveg_op,
-  C_rh_annual_op=rh_annual_op,
-  C_cLitter_op=clitter_op,
-  C_soil_op=csoil_op
-)
-
 { # plot model output with optimized parameters
   par(mfrow=c(5,2)) # make 3x4 plots in 1 window
 
@@ -408,110 +368,110 @@ optimized_median = param2res(epa_median)
 optimized_mode = param2res(epa_mode)
 optimized_min_J = param2res(epa_min_J)
 
-#annual vegetation pool--median
-optimized_median$veg_yr=optimized_median$C_leaf+optimized_median$C_sp+optimized_median$C_froot+optimized_median$C_croot
-
-cveg_median_op=NULL
-for (i in 0:319) {
-  num=sum(optimized$veg_yr[(12*i+1):(12*i+12)])
-  cveg_median_op=c(cveg_median_op,num)
-}
-#annual litter pool--median
-clitter_median_op=NULL
-for (i in 0:319) {
-  num=sum(optimized_median$f_veg2litter[(12*i+1):(12*i+12)])
-  clitter_median_op=c(clitter_median_op,num)
-}
-#annual soil pool--median
-csoil_median_op=NULL
-for (i in 0:319) {
-  num=sum(optimized_median$f_litter2soc[(12*i+1):(12*i+12)])
-  csoil_median_op=c(csoil_median_op,num)
-}
-
-#annual rh--median
-rh_median_annual_op=NULL
-for (i in 0:319) {
-  num=sum(optimized_median$rh[(12*i+1):(12*i+12)])
-  rh_median_annual_op=c(rh_median_annual_op,num)
-}
-
-optimized_median_new=list(
-  C_veg_median_op=cveg_median_op,
-  C_rh_median_annual_op=rh_median_annual_op,
-  C_cLitter_median_op=clitter_median_op,
-  C_soil_median_op=csoil_median_op
-)
-
-#annual vegetation pool--mode
-optimized_mode$veg_yr=optimized_mode$C_leaf+optimized_mode$C_sp+optimized_mode$C_froot+optimized_mode$C_croot
-
-cveg_mode_op=NULL
-for (i in 0:319) {
-  num=sum(optimized$veg_yr[(12*i+1):(12*i+12)])
-  cveg_mode_op=c(cveg_mode_op,num)
-}
-#annual litter pool--mode
-clitter_mode_op=NULL
-for (i in 0:319) {
-  num=sum(optimized_mode$f_veg2litter[(12*i+1):(12*i+12)])
-  clitter_mode_op=c(clitter_mode_op,num)
-}
-#annual soil pool--mode
-csoil_mode_op=NULL
-for (i in 0:319) {
-  num=sum(optimized_mode$f_litter2soc[(12*i+1):(12*i+12)])
-  csoil_mode_op=c(csoil_mode_op,num)
-}
-
-#annual rh--mode
-rh_mode_annual_op=NULL
-for (i in 0:319) {
-  num=sum(optimized_mode$rh[(12*i+1):(12*i+12)])
-  rh_mode_annual_op=c(rh_mode_annual_op,num)
-}
-
-optimized_mode_new=list(
-  C_veg_mode_op=cveg_mode_op,
-  C_rh_mode_annual_op=rh_mode_annual_op,
-  C_cLitter_mode_op=clitter_mode_op,
-  C_soil_mode_op=csoil_mode_op
-)
-
-#annual vegetation pool--min_J
-optimized_min_J$veg_yr=optimized_min_J$C_leaf+optimized_min_J$C_sp+optimized_min_J$C_froot+optimized_min_J$C_croot
-
-cveg_min_J_op=NULL
-for (i in 0:319) {
-  num=sum(optimized$veg_yr[(12*i+1):(12*i+12)])
-  cveg_min_J_op=c(cveg_min_J_op,num)
-}
-#annual litter pool--min_J
-clitter_min_J_op=NULL
-for (i in 0:319) {
-  num=sum(optimized_min_J$f_veg2litter[(12*i+1):(12*i+12)])
-  clitter_min_J_op=c(clitter_min_J_op,num)
-}
-#annual soil pool--min_J
-csoil_min_J_op=NULL
-for (i in 0:319) {
-  num=sum(optimized_min_J$f_litter2soc[(12*i+1):(12*i+12)])
-  csoil_min_J_op=c(csoil_min_J_op,num)
-}
-
-#annual rh--min_J
-rh_min_J_annual_op=NULL
-for (i in 0:319) {
-  num=sum(optimized_min_J$rh[(12*i+1):(12*i+12)])
-  rh_min_J_annual_op=c(rh_min_J_annual_op,num)
-}
-
-optimized_min_J_new=list(
-  C_veg_min_J_op=cveg_min_J_op,
-  C_rh_min_J_annual_op=rh_min_J_annual_op,
-  C_cLitter_min_J_op=clitter_min_J_op,
-  C_soil_min_J_op=csoil_min_J_op
-)
+# #annual vegetation pool--median
+# optimized_median$veg_yr=optimized_median$C_leaf+optimized_median$C_sp+optimized_median$C_froot+optimized_median$C_croot
+# 
+# cveg_median_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized$veg_yr[(12*i+1):(12*i+12)])
+#   cveg_median_op=c(cveg_median_op,num)
+# }
+# #annual litter pool--median
+# clitter_median_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized_median$f_veg2litter[(12*i+1):(12*i+12)])
+#   clitter_median_op=c(clitter_median_op,num)
+# }
+# #annual soil pool--median
+# csoil_median_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized_median$f_litter2soc[(12*i+1):(12*i+12)])
+#   csoil_median_op=c(csoil_median_op,num)
+# }
+# 
+# #annual rh--median
+# rh_median_annual_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized_median$rh[(12*i+1):(12*i+12)])
+#   rh_median_annual_op=c(rh_median_annual_op,num)
+# }
+# 
+# optimized_median_new=list(
+#   C_veg_median_op=cveg_median_op,
+#   C_rh_median_annual_op=rh_median_annual_op,
+#   C_cLitter_median_op=clitter_median_op,
+#   C_soil_median_op=csoil_median_op
+# )
+# 
+# #annual vegetation pool--mode
+# optimized_mode$veg_yr=optimized_mode$C_leaf+optimized_mode$C_sp+optimized_mode$C_froot+optimized_mode$C_croot
+# 
+# cveg_mode_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized$veg_yr[(12*i+1):(12*i+12)])
+#   cveg_mode_op=c(cveg_mode_op,num)
+# }
+# #annual litter pool--mode
+# clitter_mode_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized_mode$f_veg2litter[(12*i+1):(12*i+12)])
+#   clitter_mode_op=c(clitter_mode_op,num)
+# }
+# #annual soil pool--mode
+# csoil_mode_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized_mode$f_litter2soc[(12*i+1):(12*i+12)])
+#   csoil_mode_op=c(csoil_mode_op,num)
+# }
+# 
+# #annual rh--mode
+# rh_mode_annual_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized_mode$rh[(12*i+1):(12*i+12)])
+#   rh_mode_annual_op=c(rh_mode_annual_op,num)
+# }
+# 
+# optimized_mode_new=list(
+#   C_veg_mode_op=cveg_mode_op,
+#   C_rh_mode_annual_op=rh_mode_annual_op,
+#   C_cLitter_mode_op=clitter_mode_op,
+#   C_soil_mode_op=csoil_mode_op
+# )
+# 
+# #annual vegetation pool--min_J
+# optimized_min_J$veg_yr=optimized_min_J$C_leaf+optimized_min_J$C_sp+optimized_min_J$C_froot+optimized_min_J$C_croot
+# 
+# cveg_min_J_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized$veg_yr[(12*i+1):(12*i+12)])
+#   cveg_min_J_op=c(cveg_min_J_op,num)
+# }
+# #annual litter pool--min_J
+# clitter_min_J_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized_min_J$f_veg2litter[(12*i+1):(12*i+12)])
+#   clitter_min_J_op=c(clitter_min_J_op,num)
+# }
+# #annual soil pool--min_J
+# csoil_min_J_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized_min_J$f_litter2soc[(12*i+1):(12*i+12)])
+#   csoil_min_J_op=c(csoil_min_J_op,num)
+# }
+# 
+# #annual rh--min_J
+# rh_min_J_annual_op=NULL
+# for (i in 0:319) {
+#   num=sum(optimized_min_J$rh[(12*i+1):(12*i+12)])
+#   rh_min_J_annual_op=c(rh_min_J_annual_op,num)
+# }
+# 
+# optimized_min_J_new=list(
+#   C_veg_min_J_op=cveg_min_J_op,
+#   C_rh_min_J_annual_op=rh_min_J_annual_op,
+#   C_cLitter_min_J_op=clitter_min_J_op,
+#   C_soil_min_J_op=csoil_min_J_op
+# )
 
 { # plot model output with optimized parameters
   par(mfrow=c(3, 2)) # make 3x4 plots in 1 window
