@@ -226,9 +226,9 @@ make_param_filter_func<-function(C_max, C_min) {
     for (i in 1:paramNum){
       if(c[i] > C_max[i] || c[i] < C_min[i]) {flag = F; break}
       if(c[1] + c[2] > 1){flag = F; break}
-      # if(c[3] + c[4] + c[5] > 1){flag = F; break}
-      # if(c[6] + c[7] + c[8] > 1){flag = F; break}
-      if(c[10] + c[11] + c[12] + c[13] + c[14] > 1){flag = F; break}
+      if(c[4] + c[5] > 0.001){flag = F; break}
+      if(c[7] + c[8] > 0.001){flag = F; break}
+      #if(c[10] + c[11] + c[12] + c[13] + c[14] > 1){flag = F; break}
     }
     return (flag)
   }
@@ -251,7 +251,7 @@ make_weighted_cost_func<-function(obs) {
     # which in this instance already compresses the 3 different litter pools
     # to C_litter and the 3 different soil pools to one
     
-    J_obj1 = mean (( out_simu_annual$cVeg - obs$cVeg)**2)/(2*var(obs$cVeg))
+    J_obj1 = mean (( out_simu$cVeg - obs$cVeg)**2)/(2*var(obs$cVeg))
     # J_obj2 = mean (( out_simu$C_wood - obs$C_wood )**2)/(2*var(obs$C_wood))
     # J_obj3 = mean (( out_simu$C_root - obs$C_root )**2)/(2*var(obs$C_root))
     # J_obj4 = mean (( out_simu$C_litter_above - obs$C_litter_above )**2)/(2*var(obs$C_litter_above))
@@ -259,9 +259,9 @@ make_weighted_cost_func<-function(obs) {
     # J_obj6 = mean (( out_simu$C_fastsom - obs$C_fastsom )**2)/(2*var(obs$C_fastsom))
     # J_obj7 = mean (( out_simu$C_slowsom - obs$C_slowsom )**2)/(2*var(obs$C_slowsom))
     # J_obj8 = mean (( out_simu$C_passsom - obs$C_passsom )**2)/(2*var(obs$C_passsom))
-    J_obj2 = mean (( out_simu_annual$rh - obs$rh_year )**2)/(2*var(obs$rh_year))
-    J_obj3 = mean (( out_simu_annual$cLitter - obs$cLitter )**2)/(2*var(obs$cLitter))
-    J_obj4 = mean (( out_simu_annual$csoil - obs$cSoil )**2)/(2*var(obs$cSoil))
+    J_obj2 = mean (( out_simu$rh - obs$rh_year )**2)/(2*var(obs$rh_year))
+    J_obj3 = mean (( out_simu$cLitter - obs$cLitter )**2)/(2*var(obs$cLitter))
+    J_obj4 = mean (( out_simu$csoil - obs$cSoil )**2)/(2*var(obs$cSoil))
     
     J_new= (J_obj1 + J_obj2 + J_obj3 + J_obj4)/200
     
@@ -337,7 +337,7 @@ make_param2res<-function(cpa){
           0,   0,   0,   0,   f95, f96, 0,   0,  -1,  0,  0,  0,  #SMB2
           0,   0,   0,   0,   f105,0,  f107, 0,   0, -1,f1011,0,  #NOM
           0,   0,   0,   0,   f115,f116,0,   0,   0,f1110,-1, 0,  #DOM
-          0,   0,   0,   0,   0,   0,  f127, 0,   0,f1210,0, -1)/12 #PSOM
+          0,   0,   0,   0,   0,   0,  f127, 0,   0,f1210,0, -1) #PSOM
     
     A = matrix(A, nrow = 12, byrow = TRUE)
     
