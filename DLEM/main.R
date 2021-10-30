@@ -42,9 +42,9 @@ dataPath <- fromJSON(file = "config.json")[[1]]
 #    model_specifiC_helpers which means that you have to provide
 #    your version of this fuction which will most likely return different
 #    variables 
-# get data for a selected site: data path, longitude, latitude,PFT=9, tropical Brodleaf Forest
-lon=100.20#33.3
-lat=17.85#50.0
+# get data for a selected site: data path, longitude, latitude
+lon=-61.8125#33.3
+lat=-17.5#50.0
 
 # read data from NetCDF if using the script for he 1st time
 #dat<-get_example_site_vars(dataPath, lon, lat)
@@ -79,8 +79,8 @@ obs<-obs[1:nyears,]#origin:1:tot_len
 # C_min=c(0,  0,   0.1,  0.01,  0.001,  0.1,  0.01,  0.01, 0.1,  0.1,   0.001,  1/(365*2),  1/(365*60), 1/(365*30), 1/(365*60),   1/(365*10), 1/(365*30),    1/(365*20), 1/(365*50), 1/(365*500),    0, 0.1,    1,     1)
 # #pa=c(0.25, 0.2, 0.42,0.075, 0.005, 0.35, 0.12,  0.03, 0.37, 0.11, 0.01, 1/60,  1/(365*12),   1/(365*5),  1/(365*2),    1/(365*6),    1/(365*2.8),  1/(365*4.5), 1/(365*25),    1/(365*325),  0.3, 2,      4,     10)
 # C_max=c(1,  1,   0.9,   0.9,  0.9,  0.9,  0.2,  0.2,  0.9,  0.9,  0.9,   1/30,    1/365,   1/(365*0.5),   1/365,     1/(365*0.5),  1/(365*0.5),    1/(365*1),  1/(365*3.5),    1/(365*20),   0.4,  4,  100,   100)
-C_min=c(0,0,0.1,0,     0.1,  0,   0,0,0,0,0,0,0,0)
-C_max=c(1,1,0.9,0.0003,  1, 0.001,1,1,1,1,1,1,1,1)
+C_min=c(0,0,0.1,0,    0,   0.1,  0,     0,0,0,0,0,0,0,0,0)
+C_max=c(1,1,0.9,0.001,0.001, 1, 0.01,0.01,1,1,1,1,1,1,1,1)
 # fixme
 #   this function is model specific: It discards parameter proposals
 #   where beta1 and beta2 add up to more than 0.99
@@ -168,7 +168,7 @@ epa_0 = list(
 param2res = make_param2res(cpa) #pa=[beta1,beta2, lig_leaf, f41,f42, kleaf,kroot,
 #kwood,kmet,kmic, kslow,kpass, cmet_init, cstr_init, cmiC_init, cpassive_init ]
 test = param2res(epa_0)
-plot(test$cVeg,type="l",col="red")
+#plot(test$cVeg,type="l",col="red")
 
 #summary(as.data.frame(test))
 
@@ -208,7 +208,7 @@ plot(test$cVeg,type="l",col="red")
 #   csoil=csoil
 # )
 
-par(mfrow=c(4, 2)) 
+par(mfrow=c(4, 2),mar=rep(2,4)) 
 {
   plot(test$cVeg, ylim=c(0,max(test$cVeg)),type="l", col="red", xlab="annual",ylab="cVeg", main="matrix cVeg")
   plot(dat2$cVeg, col="blue", xlab="annual",type='l',ylab="cVeg", main="TRENDYv9")
@@ -220,7 +220,7 @@ par(mfrow=c(4, 2))
   plot(dat2$cSoil, xlab="annual", col="blue",type='l', ylab="cSoil",main="TRENDYv9")
   
   plot(test$rh, type="l", col="red",ylim=c(0,max(test$rh)),xlab="annual", ylab="rh", main="matrix rh")
-  plot(dat$rh,col='blue', xlab="annual",type='l', ylab="rh",main="TRENDYv9")
+  plot(dat2$rh_year,col='blue', xlab="annual",type='l', ylab="rh",main="TRENDYv9")
 }
 
 # {
@@ -241,8 +241,7 @@ par(mfrow=c(4, 2))
 #################################    MCMC   ##############################################################
 
 # MCMC demo run
-
-nsimu_demo = 100  
+nsimu_demo = 10000  
 mcmc_demo = mcmc(
   initial_parameters=epa_0,
   proposer=uniform_prop,
@@ -265,7 +264,7 @@ names(df)<-names(epa_0)
 
 # visualize parameter distribution
 {
-  par(mfrow=c(5, 3),mar=rep(2,4)) # make 4x6 plots in 1 window - good for 24 parameters
+  par(mfrow=c(6, 3),mar=rep(2,4)) # make 4x6 plots in 1 window - good for 24 parameters
   for (i in 1:length(df)) {hist(df[[i]], breaks=20, main=names(df)[i])}
   par(mfrow=c(1, 1)) # return to single plot mode
 }
@@ -278,7 +277,7 @@ normal_prop = make_multivariate_normal_proposer(
   filter_func=isQualified
 )
 ##############  MCMC formal run ###############
-nsimu_formal = 200
+nsimu_formal = 20000
 mcmc_formal = mcmc(
   initial_parameters=epa_0,
   proposer=normal_prop,
@@ -301,7 +300,7 @@ write.csv(df_j,paste0(datapath,'/dlem_formal_da_j_aa.csv'))
 ######################################## explore optimized parameters ###################################################
 # visualize parameter distribution
 {
-  par(mfrow=c(5, 3),mar=rep(2,4)) # make 4x6 plots in 1 window
+  par(mfrow=c(6, 3),mar=rep(2,4)) # make 4x6 plots in 1 window
   for (i in 1:length(df)) {hist(df[[i]], breaks=20, main=names(df)[i])}
   par(mfrow=c(1, 1)) # return to single plot mode
 }
@@ -354,12 +353,12 @@ optimized_new=list(
 )
 
 { # plot model output with optimized parameters
-  par(mfrow=c(4,2)) # make 3x4 plots in 1 window
+  par(mfrow=c(5,2)) # make 3x4 plots in 1 window
 
-  for (i in 1:length(names(optimized_new))) {
-    plot(optimized_new[[i]], type="l", col="red", xlab="year",
+  for (i in 1:length(names(optimized))) {
+    plot(optimized[[i]], type="l", col="red", xlab="year",
          #ylim=c(min(min(optimized_new[[i]]),min(obs[[i]])),max(max(optimized_new[[i]]),max(obs[[i]]))),
-         ylab=names(optimized_new)[i], main=names(optimized_new)[i])
+         ylab=names(optimized)[i], main=names(optimized)[i])
     plot(obs[[i]], col="blue",type='l',ylab=names(obs)[i], main=names(obs)[i],xlab='year')
   }
   plot(2, xlim=c(0,1), ylim=c(0,0.9), axes = F, main="legend", ylab="")
@@ -393,7 +392,7 @@ names(epa_min_J)<-names(epa_0)
 
 # visualize parameter distributions with median, mode and min cost function
 {
-  par(mfrow=c(3, 2)) # make 4x6 plots in 1 window
+  par(mfrow=c(4, 4)) # make 4x6 plots in 1 window
   for (i in 1:length(df)) {
     hist(df[[i]], breaks=100, col="lightgray", border="lightgray", probability=T, main=names(epa_0)[i])
     lines(stats::density(df[[i]]), col="black", lwd=2)
@@ -530,16 +529,16 @@ optimized_min_J_new=list(
   #   lines(optimized_mode[[i]], col="orange")
   #   lines(optimized_min_J[[i]], col="green")
   # }
-  for (i in 1:length(names(optimized_median_new))) {
+  for (i in 1:length(names(optimized_median))) {
     # if (names(optimized_median_new)[i]=="C_leaf" || names(optimized_median)[i]=="rh" || names(optimized_median)[i]=="f_veg2litter"
     #     || names(optimized_median_new)[i]=="f_litter2som") {N=tot_len%/%10} else (N=tot_len)
     
-    plot(optimized_median_new[[i]][1:N], type="l", col="red", xlab="annual",
-         ylim=c(min(min(optimized_median_new[[i]]),min(obs[[i]])),max(max(optimized_median_new[[i]]),max(obs[[i]]))), 
-         ylab=names(optimized_median_new)[i], main=names(optimized_median_new)[i])
+    plot(optimized_median[[i]][1:N], type="l", col="red", xlab="annual",
+         ylim=c(min(min(optimized_median[[i]]),min(obs[[i]])),max(max(optimized_median[[i]]),max(obs[[i]]))), 
+         ylab=names(optimized_median)[i], main=names(optimized_median)[i])
     lines(obs[[i]], col="blue")
-    lines(optimized_mode_new[[i]], col="orange")
-    lines(optimized_min_J_new[[i]], col="green")
+    lines(optimized_mode[[i]], col="orange")
+    lines(optimized_min_J[[i]], col="green")
   }
   plot(2, xlim=c(0,1), ylim=c(0,0.9), axes = F, main="legend", ylab="")
   legend(0.1, 0.9, legend=c("TRENDY Output", "Median", "Mode", "Min Cost Function"),
@@ -554,6 +553,7 @@ print(as.data.frame(epa_min_J))
 print(paste0("Acceptance rate (demo): ",mcmc_demo[[3]]))
 print(paste0("Acceptance rate (formal): ",mcmc_formal[[3]]))
 # calculate RMSE for each observed/predicted variable
+library(ModelMetrics)
 RMSE_median<-data.frame (param=names(obs), RMSE=0)
 RMSE_mode<-data.frame (param=names(obs), RMSE=0)
 RMSE_min_J<-data.frame (param=names(obs), RMSE=0)
